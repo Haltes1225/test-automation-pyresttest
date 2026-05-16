@@ -3,7 +3,7 @@
 ```
 docker-compose up -d
 
-docker compose down -v --remove-orphans && docker compose up -d --build && docker compose logs -f
+docker-compose down -v --remove-orphans ; docker-compose up -d --build ; docker-compose logs -f
 ```
 
 # How to test:
