@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
 
 if [[ "${1}" == "dev" ]]; then
     python3 manage.py migrate

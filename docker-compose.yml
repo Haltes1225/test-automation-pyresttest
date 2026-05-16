@@ -1,7 +1,4 @@
-version: '3'
-
 services:
-
   proxy:
     image: tivix/docker-nginx:v16
     environment:
@@ -9,7 +6,10 @@ services:
     ports:
       - 8080:80
     depends_on:
-      - backend
+      backend:
+        condition: service_started
+    networks:
+      - default
 
   backend:
     build:
@@ -19,4 +19,10 @@ services:
       - 8000:8000
     volumes:
       - ./backend:/app
-    command: dev
+    command: ["dev"]
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
