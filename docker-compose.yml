@@ -22,6 +22,16 @@ services:
     command: ["dev"]
     networks:
       - default
+    depends_on:
+      - selenium-chrome
+
+  selenium-chrome:
+    image: selenium/standalone-chrome:latest
+    ports:
+      - "4444:4444"
+    shm_size: '2gb'
+    networks:
+      - default
 
 networks:
   default:

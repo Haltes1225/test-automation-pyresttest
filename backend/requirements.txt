@@ -4,3 +4,6 @@ djangorestframework==3.14.0
 pyresttest==1.7.1
 
 tzdata
+
+pytest==8.2.0
+selenium==4.21.0
