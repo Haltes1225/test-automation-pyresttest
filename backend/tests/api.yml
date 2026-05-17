@@ -1,8 +1,61 @@
 ---
 - config:
-    - testset: "Basic tests"
-    - timeout: 100
+    testset: "Basic tests"
+    timeout: 100
+
 - test: 
     - name: "Basic get"
     - url: "/articles"
     - curl_option_followlocation: True
+
+- test:
+    - name: "Create article"
+    - url: "/articles/"
+    - method: "POST"
+    - body: '{"title": "Newspaper","content": "Hello World"}'
+    - headers: {Content-Type: application/json}
+    - curl_option_followlocation: True
+    - extract_binds:
+        - 'article_id': {'jsonpath_mini': 'id'}
+
+- test:
+    - name: "Get created article "
+    - template: true
+    - url: {'template': "/articles/$article_id/"}
+    - method: "GET"
+    - headers: {Content-Type: application/json}
+    - expected_status: [200]
+    - validators:
+        - compare: {jsonpath_mini: 'title', expected: 'Newspaper'}
+        - compare: {jsonpath_mini: 'content', expected: 'Hello World'}
+
+- test:
+    - name: "Edit article (Update)"
+    - url: {'template': "/articles/$article_id/"}
+    - method: "PUT"
+    - body: '{"title": "Newspaper Edited","content": "Hello World Edited"}'
+    - headers: {Content-Type: application/json}
+    - expected_status: [200, 204]
+
+- test:
+    - name: "Get edited article "
+    - template: true
+    - url: {'template': "/articles/$article_id/"}
+    - method: "GET"
+    - headers: {Content-Type: application/json}
+    - expected_status: [200]
+    - validators:
+        - compare: {jsonpath_mini: 'title', expected: 'Newspaper Edited'}
+        - compare: {jsonpath_mini: 'content', expected: 'Hello World Edited'}
+
+- test:
+    - name: "Delete article"
+    - url: {'template': "/articles/$article_id/"}
+    - method: "DELETE"
+    - expected_status: [200, 202, 204]
+
+- test:
+    - name: "Verify article is deleted"
+    - url: {'template': "/articles/$article_id/"}
+    - method: "GET"
+    - expected_status: [404]
